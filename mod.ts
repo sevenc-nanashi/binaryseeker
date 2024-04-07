@@ -1,10 +1,5 @@
 /**
  * Simple cursor-based binary reader.
- * @module
- */
-
-/**
- * Simple cursor-based binary reader.
  */
 export class BinarySeeker {
   private data: DataView;
@@ -207,7 +202,7 @@ export class BinarySeeker {
    * Read a 32-bit floating point number (f32, float) from the buffer.
    * @returns The number read.
    */
-  readFloat32(): number {
+  readFloat32BE(): number {
     const value = this.data.getFloat32(this.cursor, false);
     this.cursor += 4;
     return value;
@@ -217,8 +212,38 @@ export class BinarySeeker {
    * Read a 64-bit floating point number (f64, double) from the buffer.
    * @returns The number read.
    */
-  readFloat64(): number {
+  readFloat64BE(): number {
     const value = this.data.getFloat64(this.cursor, false);
+    this.cursor += 8;
+    return value;
+  }
+
+  /** Alias for `readFloat32BE` */
+  readFloat32(): number {
+    return this.readFloat32BE();
+  }
+
+  /** Alias for `readFloat64BE` */
+  readFloat64(): number {
+    return this.readFloat64BE();
+  }
+
+  /**
+   * Read a 32-bit floating point number (f32, float) in little-endian from the buffer.
+   * @returns The number read.
+   */
+  readFloat32LE(): number {
+    const value = this.data.getFloat32(this.cursor, true);
+    this.cursor += 4;
+    return value;
+  }
+
+  /**
+   * Read a 64-bit floating point number (f64, double) in little-endian from the buffer.
+   * @returns The number read.
+   */
+  readFloat64LE(): number {
+    const value = this.data.getFloat64(this.cursor, true);
     this.cursor += 8;
     return value;
   }
