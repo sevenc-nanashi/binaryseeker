@@ -51,7 +51,10 @@ console.log(reader.readUInt16BE()); // 0x0203
 console.log(reader.readUInt32LE()); // 0x07060504
 console.log(reader.readUInt64BE()); // 0x08090a0b0c0d0e0fn
 
-const textBuffer = new TextEncoder().encode("Hello, World!");
+const textBufferBase = new TextEncoder().encode("Hello, World!");
+const textBuffer = new Uint8Array(14);
+textBuffer.set(textBufferBase); // Uint8Array [ 72, ..., 33, 0 ]
+
 const textReader = new BinarySeeker(textBuffer.buffer);
 
 console.log(textReader.readBytes(4)); // Uint8Array [ 72, 101, 108, 108 ]
