@@ -281,6 +281,16 @@ export class BinarySeeker {
   }
 
   /**
+   * Read buffer from the current cursor to the end of the buffer.
+   * @returns The buffer read.
+   */
+  readToEnd(): Uint8Array {
+    const buffer = new Uint8Array(this.data.buffer, this.cursor);
+    this.cursor = this.data.byteLength;
+    return buffer;
+  }
+
+  /**
    * Read a fixed-length string from the buffer.
    * This is a shorthand for `readBytes` and `TextDecoder`.
    * @param length - The length of the string to read.
