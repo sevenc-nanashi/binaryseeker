@@ -2,7 +2,9 @@
   "name": "@sevenc-nanashi/binaryseeker",
   "version": "0.3.0",
   "exports": {
-    ".": "./mod.ts"
+    ".": "./mod.ts",
+    "./writer.ts": "./writer.ts",
+    "./reader.ts": "./reader.ts"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@^0.226.0"
