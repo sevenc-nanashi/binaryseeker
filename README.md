@@ -1,5 +1,7 @@
 # BinarySeeker / Simple, dependency-less, cursor-based binary reader
 
+[![jsr](https://jsr.io/badges/@sevenc-nanashi/binaryseeker)](https://jsr.io/badges/@sevenc-nanashi/binaryseeker)
+
 BinarySeeker is a simple, dependency-less, cursor-based binary reader for
 TypeScript.
 
