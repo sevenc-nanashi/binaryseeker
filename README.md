@@ -2,8 +2,7 @@
 
 [![jsr](https://jsr.io/badges/@sevenc-nanashi/binaryseeker)](https://jsr.io/badges/@sevenc-nanashi/binaryseeker)
 
-BinarySeeker is a simple, dependency-less, cursor-based binary reader for
-TypeScript.
+BinarySeeker is a simple, dependency-less, cursor-based binary reader and writer for TypeScript.
 
 ## Installation
 
@@ -30,21 +29,8 @@ More detailed documentation can be found in:
 import { BinarySeeker } from "@sevenc-nanashi/binaryseeker";
 
 const buffer = new Uint8Array([
-  0x01,
-  0x02,
-  0x03,
-  0x04,
-  0x05,
-  0x06,
-  0x07,
-  0x08,
-  0x09,
-  0x0a,
-  0x0b,
-  0x0c,
-  0x0d,
-  0x0e,
-  0x0f,
+  0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d,
+  0x0e, 0x0f,
 ]);
 const reader = new BinarySeeker(buffer.buffer);
 

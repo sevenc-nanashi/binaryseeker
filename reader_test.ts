@@ -1,5 +1,5 @@
-import BinarySeeker from "./mod.ts";
-import { assertEquals } from "https://deno.land/std@0.221.0/assert/assert_equals.ts";
+import { BinaryReader } from "./reader.ts";
+import { assertEquals } from "@std/assert/assert-equals";
 
 const data = [
   116,
@@ -25,8 +25,8 @@ const data = [
 ];
 const testCases: {
   method:
-    | (keyof BinarySeeker & `readU${string}`)
-    | (keyof BinarySeeker & `readI${string}`);
+    | (keyof BinaryReader & `readU${string}`)
+    | (keyof BinaryReader & `readI${string}`);
   expected: number;
 }[] = [
   {
@@ -64,16 +64,16 @@ const testCases: {
 ];
 
 for (const { method, expected } of testCases) {
-  Deno.test(`BinarySeeker#${method}`, () => {
-    const seeker = new BinarySeeker(new Uint8Array(data).buffer);
+  Deno.test(`BinaryReader{method}`, () => {
+    const seeker = new BinaryReader(new Uint8Array(data).buffer);
     const actual = seeker[method]();
     assertEquals(actual, expected);
   });
 }
 
-Deno.test("BinarySeeker#readFloat32", () => {
+Deno.test("BinaryReader", () => {
   const bin = "00010100000110100000101000001010";
-  const seeker = new BinarySeeker(
+  const seeker = new BinaryReader(
     new Uint8Array(bin.match(/.{8}/g)!.map((x) => parseInt(x, 2))).buffer,
   );
   const actual = seeker.readFloat32();
@@ -84,10 +84,10 @@ Deno.test("BinarySeeker#readFloat32", () => {
   assertEquals(actual, expected);
 });
 
-Deno.test("BinarySeeker#readFloat64", () => {
+Deno.test("BinaryReader#readFloat64", () => {
   const bin =
     "0111101001101110011101000110110101110100011001010111010001100101";
-  const seeker = new BinarySeeker(
+  const seeker = new BinaryReader(
     new Uint8Array(bin.match(/.{8}/g)!.map((x) => parseInt(x, 2))).buffer,
   );
   const actual = seeker.readFloat64();
@@ -99,14 +99,14 @@ Deno.test("BinarySeeker#readFloat64", () => {
   assertEquals(actual, expected);
 });
 
-Deno.test("BinarySeeker#readString", () => {
-  const seeker = new BinarySeeker(new Uint8Array(data).buffer);
+Deno.test("BinaryReader#readString", () => {
+  const seeker = new BinaryReader(new Uint8Array(data).buffer);
   const actual = seeker.readString();
   assertEquals(actual, "tsukuyomichankawaii");
 });
 
-Deno.test("BinarySeeker does seek", () => {
-  const seeker = new BinarySeeker(new Uint8Array(data).buffer);
+Deno.test("BinaryReader does seek", () => {
+  const seeker = new BinaryReader(new Uint8Array(data).buffer);
   const firstByte = seeker.readUInt8();
   const secondByte = seeker.readUInt8();
   assertEquals(firstByte, 116);
