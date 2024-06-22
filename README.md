@@ -26,13 +26,13 @@ More detailed documentation can be found in:
 <https://jsr.io/@sevenc-nanashi/binaryseeker>
 
 ```typescript
-import { BinarySeeker } from "@sevenc-nanashi/binaryseeker";
+import { BinaryReader } from "@sevenc-nanashi/binaryseeker";
 
 const buffer = new Uint8Array([
   0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d,
   0x0e, 0x0f,
 ]);
-const reader = new BinarySeeker(buffer.buffer);
+const reader = new BinaryReader(buffer.buffer);
 
 console.log(reader.readUInt8()); // 1
 console.log(reader.readUInt16BE()); // 0x0203
@@ -43,7 +43,7 @@ const textBufferBase = new TextEncoder().encode("Hello, World!");
 const textBuffer = new Uint8Array(14);
 textBuffer.set(textBufferBase); // Uint8Array [ 72, ..., 33, 0 ]
 
-const textReader = new BinarySeeker(textBuffer.buffer);
+const textReader = new BinaryReader(textBuffer.buffer);
 
 console.log(textReader.readBytes(4)); // Uint8Array [ 72, 101, 108, 108 ]
 console.log(textReader.readChars(4)); // "o, W"
