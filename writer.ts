@@ -1,19 +1,25 @@
 /**
  * Simple cursor-based binary writer.
+ *
+ * On initialization, the writer creates a buffer with a default size of 256 bytes.
+ * The buffer will grow automatically as needed, but you can use {@link ensureSize} to reduce the number of resizes.
  */
 export class BinaryWriter {
   private data: Uint8Array;
   private view: DataView;
   public cursor: number;
+  private maxCursor: number;
 
   /**
    * Create a new BinaryWriter instance.
+   * @param initialSize - The initial size of the buffer. The buffer will grow automatically as needed, but this can help reduce the number of resizes.
    * @returns A new BinaryWriter instance.
    */
-  constructor() {
-    this.data = new Uint8Array(0);
+  constructor(initialSize: number = 256) {
+    this.data = new Uint8Array(initialSize);
     this.view = new DataView(this.data.buffer);
     this.cursor = 0;
+    this.maxCursor = 0;
   }
 
   /**
@@ -28,9 +34,9 @@ export class BinaryWriter {
    * @param value - The byte to write.
    */
   writeUInt8(value: number): void {
-    this.allocate(1);
+    this.preWrite(1);
     this.view.setUint8(this.cursor, value);
-    this.cursor += 1;
+    this.postWrite(1);
   }
 
   /**
@@ -38,9 +44,9 @@ export class BinaryWriter {
    * @param value - The byte to write.
    */
   writeInt8(value: number): void {
-    this.allocate(1);
+    this.preWrite(1);
     this.data[this.cursor] = value;
-    this.cursor += 1;
+    this.postWrite(1);
   }
 
   /**
@@ -89,10 +95,10 @@ export class BinaryWriter {
    * @param value - The number to write.
    */
   writeUInt32LE(value: number): void {
-    this.allocate(4);
+    this.preWrite(4);
     const view = new DataView(this.data.buffer);
     view.setUint32(this.cursor, value, true);
-    this.cursor += 4;
+    this.postWrite(4);
   }
 
   /**
@@ -100,10 +106,10 @@ export class BinaryWriter {
    * @param value - The number to write.
    */
   writeUInt32BE(value: number): void {
-    this.allocate(4);
+    this.preWrite(4);
     const view = new DataView(this.data.buffer);
     view.setUint32(this.cursor, value, false);
-    this.cursor += 4;
+    this.postWrite(4);
   }
 
   /**
@@ -111,10 +117,10 @@ export class BinaryWriter {
    * @param value - The number to write.
    */
   writeUInt16LE(value: number): void {
-    this.allocate(2);
+    this.preWrite(2);
     const view = new DataView(this.data.buffer);
     view.setUint16(this.cursor, value, true);
-    this.cursor += 2;
+    this.postWrite(2);
   }
 
   /**
@@ -123,10 +129,10 @@ export class BinaryWriter {
    * @returns The number read.
    */
   writeUInt16BE(value: number): void {
-    this.allocate(2);
+    this.preWrite(2);
     const view = new DataView(this.data.buffer);
     view.setUint16(this.cursor, value, false);
-    this.cursor += 2;
+    this.postWrite(2);
   }
 
   /**
@@ -134,10 +140,10 @@ export class BinaryWriter {
    * @param value - The number to write.
    */
   writeInt32LE(value: number): void {
-    this.allocate(4);
+    this.preWrite(4);
     const view = new DataView(this.data.buffer);
     view.setInt32(this.cursor, value, true);
-    this.cursor += 4;
+    this.postWrite(4);
   }
 
   /**
@@ -145,10 +151,10 @@ export class BinaryWriter {
    * @param value - The number to write.
    */
   writeInt32BE(value: number): void {
-    this.allocate(4);
+    this.preWrite(4);
     const view = new DataView(this.data.buffer);
     view.setInt32(this.cursor, value, false);
-    this.cursor += 4;
+    this.postWrite(4);
   }
 
   /**
@@ -156,10 +162,10 @@ export class BinaryWriter {
    * @param value - The number to write.
    */
   writeInt16LE(value: number): void {
-    this.allocate(2);
+    this.preWrite(2);
     const view = new DataView(this.data.buffer);
     view.setInt16(this.cursor, value, true);
-    this.cursor += 2;
+    this.postWrite(2);
   }
 
   /**
@@ -167,10 +173,10 @@ export class BinaryWriter {
    * @param value - The number to write.
    */
   writeInt16BE(value: number): void {
-    this.allocate(2);
+    this.preWrite(2);
     const view = new DataView(this.data.buffer);
     view.setInt16(this.cursor, value, false);
-    this.cursor += 2;
+    this.postWrite(2);
   }
 
   /**
@@ -178,10 +184,10 @@ export class BinaryWriter {
    * @param value - The number to write.
    */
   writeUInt64LE(value: bigint): void {
-    this.allocate(8);
+    this.preWrite(8);
     const view = new DataView(this.data.buffer);
     view.setBigUint64(this.cursor, value, true);
-    this.cursor += 8;
+    this.postWrite(8);
   }
 
   /**
@@ -189,10 +195,10 @@ export class BinaryWriter {
    * @param value - The number to write.
    */
   writeUInt64BE(value: bigint): void {
-    this.allocate(8);
+    this.preWrite(8);
     const view = new DataView(this.data.buffer);
     view.setBigUint64(this.cursor, value, false);
-    this.cursor += 8;
+    this.postWrite(8);
   }
 
   /**
@@ -200,10 +206,10 @@ export class BinaryWriter {
    * @param value - The number to write.
    */
   writeInt64LE(value: bigint): void {
-    this.allocate(8);
+    this.preWrite(8);
     const view = new DataView(this.data.buffer);
     view.setBigInt64(this.cursor, value, true);
-    this.cursor += 8;
+    this.postWrite(8);
   }
 
   /**
@@ -211,10 +217,10 @@ export class BinaryWriter {
    * @param value - The number to write.
    */
   writeFloat32LE(value: number): void {
-    this.allocate(4);
+    this.preWrite(4);
     const view = new DataView(this.data.buffer);
     view.setFloat32(this.cursor, value, true);
-    this.cursor += 4;
+    this.postWrite(4);
   }
 
   /**
@@ -222,10 +228,10 @@ export class BinaryWriter {
    * @param value - The number to write.
    */
   writeFloat64LE(value: number): void {
-    this.allocate(8);
+    this.preWrite(8);
     const view = new DataView(this.data.buffer);
     view.setFloat64(this.cursor, value, true);
-    this.cursor += 8;
+    this.postWrite(8);
   }
 
   /**
@@ -233,10 +239,10 @@ export class BinaryWriter {
    * @param value - The number to write.
    */
   writeFloat32BE(value: number): void {
-    this.allocate(4);
+    this.preWrite(4);
     const view = new DataView(this.data.buffer);
     view.setFloat32(this.cursor, value, false);
-    this.cursor += 4;
+    this.postWrite(4);
   }
 
   /**
@@ -244,10 +250,10 @@ export class BinaryWriter {
    * @param value - The number to write.
    */
   writeFloat64BE(value: number): void {
-    this.allocate(8);
+    this.preWrite(8);
     const view = new DataView(this.data.buffer);
     view.setFloat64(this.cursor, value, false);
-    this.cursor += 8;
+    this.postWrite(8);
   }
 
   /** Alias for `writeFloat32LE` */
@@ -268,12 +274,12 @@ export class BinaryWriter {
   writeString(value: string): void {
     const encoder = new TextEncoder();
     const bytes = encoder.encode(value);
-    this.allocate(bytes.length + 1);
+    this.preWrite(bytes.length + 1);
     for (let i = 0; i < bytes.length; i++) {
       this.data[this.cursor + i] = bytes[i];
     }
     this.data[this.cursor + bytes.length] = 0;
-    this.cursor += bytes.length + 1;
+    this.postWrite(bytes.length + 1);
   }
 
   /**
@@ -282,9 +288,9 @@ export class BinaryWriter {
    * @param value - The buffer to write.
    */
   writeBytes(value: Uint8Array): void {
-    this.allocate(value.length);
+    this.preWrite(value.length);
     this.data.set(value, this.cursor);
-    this.cursor += value.length;
+    this.postWrite(value.length);
   }
 
   /**
@@ -292,14 +298,61 @@ export class BinaryWriter {
    * @returns The buffer as a Uint8Array.
    */
   toUint8Array(): Uint8Array {
-    return Uint8Array.from(this.data);
+    return Uint8Array.from(this.data.slice(0, this.maxCursor));
   }
 
-  private allocate(size: number): void {
+  /**
+   * Increase the buffer size to the specified size if the buffer is too small.
+   * @param size - The size to increase the buffer to.
+   * @returns The new buffer size.
+   */
+  ensureSize(size: number): number {
+    if (this.data.byteLength < size) {
+      this.extendBuffer(size);
+    }
+    return this.data.byteLength;
+  }
+
+  /** Get the current length of the buffer. */
+  get length(): number {
+    return this.maxCursor;
+  }
+
+  /** Get the current capacity of the buffer. */
+  get capacity(): number {
+    return this.data.byteLength;
+  }
+
+  /** Allocate more space in the buffer, if needed. */
+  private preWrite(size: number): void {
     if (this.cursor + size > this.data.byteLength) {
-      this.data = new Uint8Array(this.cursor + size);
-      this.data.set(new Uint8Array(this.view.buffer));
-      this.view = new DataView(this.data.buffer);
+      let newSize;
+      if (this.data.byteLength >= 2048) {
+        newSize = this.data.byteLength + 2048;
+      } else {
+        newSize = this.data.byteLength * 2;
+      }
+      if (this.cursor + size > newSize) {
+        newSize = this.cursor + size;
+      }
+
+      this.extendBuffer(newSize);
+    }
+  }
+
+  /** Allocate more space in the buffer. */
+  private extendBuffer(length: number): void {
+    const newData = new Uint8Array(length);
+    newData.set(this.data);
+    this.data = newData;
+    this.view = new DataView(newData.buffer);
+  }
+
+  /** Update the cursor after writing to the buffer. */
+  private postWrite(size: number): void {
+    this.cursor += size;
+    if (this.cursor > this.maxCursor) {
+      this.maxCursor = this.cursor;
     }
   }
 }

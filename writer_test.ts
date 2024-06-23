@@ -49,3 +49,24 @@ Deno.test("BinaryWriter#writeBytes", () => {
     new Uint8Array([1, 2, 3, 4]),
   );
 });
+
+Deno.test("BinaryWriter grows automatically", () => {
+  // When doubling capacity is enough
+  const writer = new BinaryWriter(2);
+  writer.writeUInt8(1);
+  writer.writeUInt8(1);
+  writer.writeUInt8(1);
+  assertEquals(
+    writer.toUint8Array(),
+    new Uint8Array([1, 1, 1]),
+  );
+  assertEquals(writer.capacity, 4);
+
+  // When doubling capacity is not enough
+  writer.writeUInt64LE(1n);
+  assertEquals(
+    writer.toUint8Array(),
+    new Uint8Array([1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0]),
+  );
+  assertEquals(writer.capacity, 11);
+});
