@@ -29,7 +29,7 @@ More detailed documentation can be found in:
 ```typescript
 import { BinaryReader } from "@sevenc-nanashi/binaryseeker";
 
-const buffer = new Uint8Array(Array.from({ length: 16 }, (_, i) => i + 1))
+const buffer = new Uint8Array(Array.from({ length: 16 }, (_, i) => i + 1));
 const reader = new BinaryReader(buffer.buffer);
 
 console.log(reader.readUInt8()); // 1
