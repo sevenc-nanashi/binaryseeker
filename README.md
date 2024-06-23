@@ -1,4 +1,4 @@
-# BinarySeeker / Simple, dependency-less, cursor-based binary reader
+# BinarySeeker / Simple, dependency-less, cursor-based binary reader & writer
 
 [![jsr](https://jsr.io/badges/@sevenc-nanashi/binaryseeker)](https://jsr.io/badges/@sevenc-nanashi/binaryseeker)
 
