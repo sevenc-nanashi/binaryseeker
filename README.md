@@ -50,6 +50,27 @@ console.log(textReader.readChars(4)); // "o, W"
 console.log(textReader.readString()); // "orld!"
 ```
 
+```typescript
+import { BinaryWriter } from "@sevenc-nanashi/binaryseeker";
+
+const writer = new BinaryWriter();
+
+writer.writeUInt8(1);
+writer.writeUInt16BE(0x0203);
+writer.writeUInt32LE(0x04050607);
+writer.writeUInt64BE(0x08090a0b0c0d0e0fn);
+
+console.log(writer.toUint8Array()); // Uint8Array [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ]
+
+const textWriter = new BinaryWriter();
+
+textWriter.writeBytes(new Uint8Array([72, 101, 108, 108]));
+textWriter.writeChars("o, W");
+textWriter.writeString("orld!");
+
+console.log(textWriter.toUint8Array()); // Uint8Array [ 72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33, 0 ]
+```
+
 ## License
 
 This project is licensed under the MIT License, see [LICENSE](LICENSE) for more

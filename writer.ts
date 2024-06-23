@@ -294,6 +294,21 @@ export class BinaryWriter {
   }
 
   /**
+    * Write a string to the buffer, without null-terminating it.
+    *
+    * @param value - The string to write.
+    */
+  writeChars(value: string): void {
+    const encoder = new TextEncoder();
+    const bytes = encoder.encode(value);
+    this.preWrite(bytes.length);
+    for (let i = 0; i < bytes.length; i++) {
+      this.data[this.cursor + i] = bytes[i];
+    }
+    this.postWrite(bytes.length);
+  }
+
+  /**
    * Save the buffer as a Uint8Array.
    * @returns The buffer as a Uint8Array.
    */
