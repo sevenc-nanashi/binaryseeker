@@ -294,10 +294,10 @@ export class BinaryWriter {
   }
 
   /**
-    * Write a string to the buffer, without null-terminating it.
-    *
-    * @param value - The string to write.
-    */
+   * Write a string to the buffer, without null-terminating it.
+   *
+   * @param value - The string to write.
+   */
   writeChars(value: string): void {
     const encoder = new TextEncoder();
     const bytes = encoder.encode(value);
