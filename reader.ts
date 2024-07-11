@@ -47,17 +47,17 @@ export class BinaryReader {
    * Read a number from the buffer.
    *
    * > [!NOTE]
-   * > In most cases, you should use the `readTypeEndian` method instead.
+   * > In most cases, you should use the `read[Type][Endian]` method instead.
    *
    * @param type - The type of number to read.
    * @param endian - The endianness to read the number in.
    * @returns The number read.
    */
   read(
-    type: "u32" | "u16" | "i32" | "i16" | "f32" | "f64" | "u8" | "i8",
+    kind: "u32" | "u16" | "i32" | "i16" | "f32" | "f64" | "u8" | "i8",
     endian: "le" | "be" = "le",
   ): number {
-    switch (type) {
+    switch (kind) {
       case "u8":
         return this.readUInt8();
       case "i8":
@@ -74,6 +74,9 @@ export class BinaryReader {
         return endian === "le" ? this.readFloat32LE() : this.readFloat32BE();
       case "f64":
         return endian === "le" ? this.readFloat64LE() : this.readFloat64BE();
+      default:
+        kind satisfies never;
+        throw new Error(`Unknown type: ${kind}`);
     }
   }
 

@@ -2,7 +2,7 @@
  * Simple cursor-based binary writer.
  *
  * On initialization, the writer creates a buffer with a default size of 256 bytes.
- * The buffer will grow automatically as needed, but you can use {@link ensureSize} to reduce the number of resizes.
+ * The buffer will grow automatically as needed, but you can use {@link ensureSize} to reduce the number of resizing.
  */
 export class BinaryWriter {
   private data: Uint8Array;
@@ -12,7 +12,7 @@ export class BinaryWriter {
 
   /**
    * Create a new BinaryWriter instance.
-   * @param initialSize - The initial size of the buffer. The buffer will grow automatically as needed, but this can help reduce the number of resizes.
+   * @param initialSize - The initial size of the buffer. The buffer will grow automatically as needed, but this parameter can help reduce the number of resizing.
    * @returns A new BinaryWriter instance.
    */
   constructor(initialSize: number = 256) {
@@ -53,18 +53,24 @@ export class BinaryWriter {
    * Write a number to the buffer.
    *
    * > [!NOTE]
-   * > In most cases, you should use the `writeTypeEndian` method instead.
+   * > In most cases, you should use the `write[Type][Endian]` method instead.
    *
    * @param value - The number to write.
-   * @param type - The type of number to write.
+   * @param kind - The type of number to write.
    * @param endian - The endianness to write the number in.
    */
   write(
     value: number,
-    type: "u32" | "u16" | "i32" | "i16" | "f32" | "f64",
+    kind: "u32" | "u16" | "i32" | "i16" | "f32" | "f64" | "u8" | "i8",
     endian: "le" | "be" = "le",
   ): void {
-    switch (type) {
+    switch (kind) {
+      case "u8":
+        this.writeUInt8(value);
+        break;
+      case "i8":
+        this.writeInt8(value);
+        break;
       case "u32":
         endian === "le" ? this.writeUInt32LE(value) : this.writeUInt32BE(value);
         break;
@@ -87,6 +93,9 @@ export class BinaryWriter {
           ? this.writeFloat64LE(value)
           : this.writeFloat64BE(value);
         break;
+      default:
+        kind satisfies never;
+        throw new Error(`Unknown kind: ${kind}`);
     }
   }
 
@@ -96,8 +105,7 @@ export class BinaryWriter {
    */
   writeUInt32LE(value: number): void {
     this.preWrite(4);
-    const view = new DataView(this.data.buffer);
-    view.setUint32(this.cursor, value, true);
+    this.view.setUint32(this.cursor, value, true);
     this.postWrite(4);
   }
 
@@ -107,8 +115,7 @@ export class BinaryWriter {
    */
   writeUInt32BE(value: number): void {
     this.preWrite(4);
-    const view = new DataView(this.data.buffer);
-    view.setUint32(this.cursor, value, false);
+    this.view.setUint32(this.cursor, value, false);
     this.postWrite(4);
   }
 
@@ -118,20 +125,17 @@ export class BinaryWriter {
    */
   writeUInt16LE(value: number): void {
     this.preWrite(2);
-    const view = new DataView(this.data.buffer);
-    view.setUint16(this.cursor, value, true);
+    this.view.setUint16(this.cursor, value, true);
     this.postWrite(2);
   }
 
   /**
    * Write a 16-bit unsigned integer to the buffer in big-endian format.
    * @param value - The number to write.
-   * @returns The number read.
    */
   writeUInt16BE(value: number): void {
     this.preWrite(2);
-    const view = new DataView(this.data.buffer);
-    view.setUint16(this.cursor, value, false);
+    this.view.setUint16(this.cursor, value, false);
     this.postWrite(2);
   }
 
@@ -141,8 +145,7 @@ export class BinaryWriter {
    */
   writeInt32LE(value: number): void {
     this.preWrite(4);
-    const view = new DataView(this.data.buffer);
-    view.setInt32(this.cursor, value, true);
+    this.view.setInt32(this.cursor, value, true);
     this.postWrite(4);
   }
 
@@ -152,8 +155,7 @@ export class BinaryWriter {
    */
   writeInt32BE(value: number): void {
     this.preWrite(4);
-    const view = new DataView(this.data.buffer);
-    view.setInt32(this.cursor, value, false);
+    this.view.setInt32(this.cursor, value, false);
     this.postWrite(4);
   }
 
@@ -163,8 +165,7 @@ export class BinaryWriter {
    */
   writeInt16LE(value: number): void {
     this.preWrite(2);
-    const view = new DataView(this.data.buffer);
-    view.setInt16(this.cursor, value, true);
+    this.view.setInt16(this.cursor, value, true);
     this.postWrite(2);
   }
 
@@ -174,8 +175,7 @@ export class BinaryWriter {
    */
   writeInt16BE(value: number): void {
     this.preWrite(2);
-    const view = new DataView(this.data.buffer);
-    view.setInt16(this.cursor, value, false);
+    this.view.setInt16(this.cursor, value, false);
     this.postWrite(2);
   }
 
@@ -185,8 +185,7 @@ export class BinaryWriter {
    */
   writeUInt64LE(value: bigint): void {
     this.preWrite(8);
-    const view = new DataView(this.data.buffer);
-    view.setBigUint64(this.cursor, value, true);
+    this.view.setBigUint64(this.cursor, value, true);
     this.postWrite(8);
   }
 
@@ -196,8 +195,7 @@ export class BinaryWriter {
    */
   writeUInt64BE(value: bigint): void {
     this.preWrite(8);
-    const view = new DataView(this.data.buffer);
-    view.setBigUint64(this.cursor, value, false);
+    this.view.setBigUint64(this.cursor, value, false);
     this.postWrite(8);
   }
 
@@ -207,8 +205,7 @@ export class BinaryWriter {
    */
   writeInt64LE(value: bigint): void {
     this.preWrite(8);
-    const view = new DataView(this.data.buffer);
-    view.setBigInt64(this.cursor, value, true);
+    this.view.setBigInt64(this.cursor, value, true);
     this.postWrite(8);
   }
 
@@ -218,8 +215,7 @@ export class BinaryWriter {
    */
   writeFloat32LE(value: number): void {
     this.preWrite(4);
-    const view = new DataView(this.data.buffer);
-    view.setFloat32(this.cursor, value, true);
+    this.view.setFloat32(this.cursor, value, true);
     this.postWrite(4);
   }
 
@@ -229,8 +225,7 @@ export class BinaryWriter {
    */
   writeFloat64LE(value: number): void {
     this.preWrite(8);
-    const view = new DataView(this.data.buffer);
-    view.setFloat64(this.cursor, value, true);
+    this.view.setFloat64(this.cursor, value, true);
     this.postWrite(8);
   }
 
@@ -240,8 +235,7 @@ export class BinaryWriter {
    */
   writeFloat32BE(value: number): void {
     this.preWrite(4);
-    const view = new DataView(this.data.buffer);
-    view.setFloat32(this.cursor, value, false);
+    this.view.setFloat32(this.cursor, value, false);
     this.postWrite(4);
   }
 
@@ -251,8 +245,7 @@ export class BinaryWriter {
    */
   writeFloat64BE(value: number): void {
     this.preWrite(8);
-    const view = new DataView(this.data.buffer);
-    view.setFloat64(this.cursor, value, false);
+    this.view.setFloat64(this.cursor, value, false);
     this.postWrite(8);
   }
 
