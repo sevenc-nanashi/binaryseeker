@@ -112,3 +112,9 @@ Deno.test("BinaryReader does seek", () => {
   assertEquals(firstByte, 116);
   assertEquals(secondByte, 115);
 });
+Deno.test("BinaryReader#hasMoreData", () => {
+  const seeker = new BinaryReader(new Uint8Array(data).buffer);
+  assertEquals(seeker.hasMoreData, true);
+  seeker.seek(20);
+  assertEquals(seeker.hasMoreData, false);
+});

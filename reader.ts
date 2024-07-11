@@ -302,4 +302,11 @@ export class BinaryReader {
     const decoder = new TextDecoder();
     return decoder.decode(buffer);
   }
+
+  /**
+   * Returns if there are more data to read.
+   */
+  get hasMoreData(): boolean {
+    return this.cursor < this.data.byteLength;
+  }
 }
