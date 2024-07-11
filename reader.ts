@@ -2,8 +2,8 @@
  * Simple cursor-based binary reader.
  */
 export class BinaryReader {
-  private data: DataView;
-  public cursor: number;
+  #data: DataView;
+  #cursor: number;
 
   /**
    * Create a new BinarySeeker instance.
@@ -11,8 +11,15 @@ export class BinaryReader {
    * @returns A new BinarySeeker instance.
    */
   constructor(data: ArrayBuffer) {
-    this.data = new DataView(data);
-    this.cursor = 0;
+    this.#data = new DataView(data);
+    this.#cursor = 0;
+  }
+
+  /**
+   * Returns the current cursor position.
+   */
+  get cursor(): number {
+    return this.#cursor;
   }
 
   /**
@@ -20,7 +27,7 @@ export class BinaryReader {
    * @param offset - The offset to seek to.
    */
   seek(offset: number): void {
-    this.cursor = offset;
+    this.#cursor = offset;
   }
 
   /**
@@ -28,8 +35,8 @@ export class BinaryReader {
    * @returns The byte read.
    */
   readUInt8(): number {
-    const value = this.data.getUint8(this.cursor);
-    this.cursor += 1;
+    const value = this.#data.getUint8(this.#cursor);
+    this.#cursor += 1;
     return value;
   }
 
@@ -38,8 +45,8 @@ export class BinaryReader {
    * @returns The byte read.
    */
   readInt8(): number {
-    const value = this.data.getInt8(this.cursor);
-    this.cursor += 1;
+    const value = this.#data.getInt8(this.#cursor);
+    this.#cursor += 1;
     return value;
   }
 
@@ -85,8 +92,8 @@ export class BinaryReader {
    * @returns The number read.
    */
   readUInt64LE(): bigint {
-    const value = this.data.getBigUint64(this.cursor, true);
-    this.cursor += 8;
+    const value = this.#data.getBigUint64(this.#cursor, true);
+    this.#cursor += 8;
     return value;
   }
 
@@ -95,8 +102,8 @@ export class BinaryReader {
    * @returns The number read.
    */
   readUInt32LE(): number {
-    const value = this.data.getUint32(this.cursor, true);
-    this.cursor += 4;
+    const value = this.#data.getUint32(this.#cursor, true);
+    this.#cursor += 4;
     return value;
   }
 
@@ -105,8 +112,8 @@ export class BinaryReader {
    * @returns The number read.
    */
   readUInt16LE(): number {
-    const value = this.data.getUint16(this.cursor, true);
-    this.cursor += 2;
+    const value = this.#data.getUint16(this.#cursor, true);
+    this.#cursor += 2;
     return value;
   }
 
@@ -115,8 +122,8 @@ export class BinaryReader {
    * @returns The number read.
    */
   readInt64LE(): bigint {
-    const value = this.data.getBigInt64(this.cursor, true);
-    this.cursor += 8;
+    const value = this.#data.getBigInt64(this.#cursor, true);
+    this.#cursor += 8;
     return value;
   }
 
@@ -125,8 +132,8 @@ export class BinaryReader {
    * @returns The number read.
    */
   readInt32LE(): number {
-    const value = this.data.getInt32(this.cursor, true);
-    this.cursor += 4;
+    const value = this.#data.getInt32(this.#cursor, true);
+    this.#cursor += 4;
     return value;
   }
 
@@ -135,8 +142,8 @@ export class BinaryReader {
    * @returns The number read.
    */
   readInt16LE(): number {
-    const value = this.data.getInt16(this.cursor, true);
-    this.cursor += 2;
+    const value = this.#data.getInt16(this.#cursor, true);
+    this.#cursor += 2;
     return value;
   }
 
@@ -145,8 +152,8 @@ export class BinaryReader {
    * @returns The number read.
    */
   readUInt64BE(): bigint {
-    const value = this.data.getBigUint64(this.cursor, false);
-    this.cursor += 8;
+    const value = this.#data.getBigUint64(this.#cursor, false);
+    this.#cursor += 8;
     return value;
   }
   /**
@@ -154,8 +161,8 @@ export class BinaryReader {
    * @returns The number read.
    */
   readUInt32BE(): number {
-    const value = this.data.getUint32(this.cursor, false);
-    this.cursor += 4;
+    const value = this.#data.getUint32(this.#cursor, false);
+    this.#cursor += 4;
     return value;
   }
 
@@ -164,8 +171,8 @@ export class BinaryReader {
    * @returns The number read.
    */
   readUInt16BE(): number {
-    const value = this.data.getUint16(this.cursor, false);
-    this.cursor += 2;
+    const value = this.#data.getUint16(this.#cursor, false);
+    this.#cursor += 2;
     return value;
   }
 
@@ -174,8 +181,8 @@ export class BinaryReader {
    * @returns The number read.
    */
   readInt64BE(): bigint {
-    const value = this.data.getBigInt64(this.cursor, false);
-    this.cursor += 8;
+    const value = this.#data.getBigInt64(this.#cursor, false);
+    this.#cursor += 8;
     return value;
   }
 
@@ -184,8 +191,8 @@ export class BinaryReader {
    * @returns The number read.
    */
   readInt32BE(): number {
-    const value = this.data.getInt32(this.cursor, false);
-    this.cursor += 4;
+    const value = this.#data.getInt32(this.#cursor, false);
+    this.#cursor += 4;
     return value;
   }
 
@@ -194,8 +201,8 @@ export class BinaryReader {
    * @returns The number read.
    */
   readInt16BE(): number {
-    const value = this.data.getInt16(this.cursor, false);
-    this.cursor += 2;
+    const value = this.#data.getInt16(this.#cursor, false);
+    this.#cursor += 2;
     return value;
   }
 
@@ -204,8 +211,8 @@ export class BinaryReader {
    * @returns The number read.
    */
   readFloat32BE(): number {
-    const value = this.data.getFloat32(this.cursor, false);
-    this.cursor += 4;
+    const value = this.#data.getFloat32(this.#cursor, false);
+    this.#cursor += 4;
     return value;
   }
 
@@ -214,8 +221,8 @@ export class BinaryReader {
    * @returns The number read.
    */
   readFloat64BE(): number {
-    const value = this.data.getFloat64(this.cursor, false);
-    this.cursor += 8;
+    const value = this.#data.getFloat64(this.#cursor, false);
+    this.#cursor += 8;
     return value;
   }
 
@@ -234,8 +241,8 @@ export class BinaryReader {
    * @returns The number read.
    */
   readFloat32LE(): number {
-    const value = this.data.getFloat32(this.cursor, true);
-    this.cursor += 4;
+    const value = this.#data.getFloat32(this.#cursor, true);
+    this.#cursor += 4;
     return value;
   }
 
@@ -244,8 +251,8 @@ export class BinaryReader {
    * @returns The number read.
    */
   readFloat64LE(): number {
-    const value = this.data.getFloat64(this.cursor, true);
-    this.cursor += 8;
+    const value = this.#data.getFloat64(this.#cursor, true);
+    this.#cursor += 8;
     return value;
   }
 
@@ -256,8 +263,8 @@ export class BinaryReader {
   readString(): string {
     const buffer: number[] = [];
     while (true) {
-      const charCode = this.data.getUint8(this.cursor);
-      this.cursor += 1;
+      const charCode = this.#data.getUint8(this.#cursor);
+      this.#cursor += 1;
       if (charCode === 0) {
         break;
       }
@@ -275,9 +282,9 @@ export class BinaryReader {
   readBytes(length: number): Uint8Array {
     const buffer = new Uint8Array(length);
     for (let i = 0; i < length; i++) {
-      buffer[i] = this.data.getUint8(this.cursor + i);
+      buffer[i] = this.#data.getUint8(this.#cursor + i);
     }
-    this.cursor += length;
+    this.#cursor += length;
     return buffer;
   }
 
@@ -286,8 +293,8 @@ export class BinaryReader {
    * @returns The buffer read.
    */
   readToEnd(): Uint8Array {
-    const buffer = new Uint8Array(this.data.buffer, this.cursor);
-    this.cursor = this.data.byteLength;
+    const buffer = new Uint8Array(this.#data.buffer, this.#cursor);
+    this.#cursor = this.#data.byteLength;
     return buffer;
   }
 
@@ -307,6 +314,6 @@ export class BinaryReader {
    * Returns if there are more data to read.
    */
   get hasMoreData(): boolean {
-    return this.cursor < this.data.byteLength;
+    return this.#cursor < this.#data.byteLength;
   }
 }
