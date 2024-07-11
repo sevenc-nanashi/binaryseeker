@@ -219,6 +219,16 @@ export class BinaryWriter {
   }
 
   /**
+   * Write a 64-bit signed integer to the buffer in big-endian format.
+   * @param value - The number to write.
+   */
+  writeInt64BE(value: bigint): void {
+    this.preWrite(8);
+    this.#view.setBigInt64(this.#cursor, value, false);
+    this.postWrite(8);
+  }
+
+  /**
    * Write a 32-bit floating point number (f32, float) to the buffer in little-endian format.
    * @param value - The number to write.
    */

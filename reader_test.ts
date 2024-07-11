@@ -1,28 +1,11 @@
 import { BinaryReader } from "./reader.ts";
 import { assertEquals } from "@std/assert/assert-equals";
 
+// deno-fmt-ignore
 const data = [
-  116,
-  115,
-  117,
-  107,
-  117,
-  121,
-  111,
-  109,
-  105,
-  99,
-  104,
-  97,
-  110,
-  107,
-  97,
-  119,
-  97,
-  105,
-  105,
-  0,
+  116, 115, 117, 107, 117, 121, 111, 109, 105, 99, 104, 97, 110, 107, 97, 119, 97, 105, 105, 0
 ];
+
 const testCases: {
   method:
     | (keyof BinaryReader & `readU${string}`)

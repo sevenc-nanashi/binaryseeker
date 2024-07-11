@@ -26,6 +26,39 @@ for (
   });
 }
 
+for (
+  const [name, value, actual] of [
+    ["writeUInt64LE", 0x123456789abcdefn, [
+      0xef,
+      0xcd,
+      0xab,
+      0x89,
+      0x67,
+      0x45,
+      0x23,
+      0x01,
+    ]],
+    ["writeUInt64BE", 0x123456789abcdefn, [
+      0x01,
+      0x23,
+      0x45,
+      0x67,
+      0x89,
+      0xab,
+      0xcd,
+      0xef,
+    ]],
+    ["writeInt64LE", -1n, [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]],
+    ["writeInt64BE", -1n, [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]],
+  ] as const
+) {
+  Deno.test(`BinaryWriter#${name}`, () => {
+    const writer = new BinaryWriter();
+    writer[name](value);
+    assertEquals(writer.toUint8Array(), new Uint8Array(actual));
+  });
+}
+
 Deno.test("BinaryWriter#writeString", () => {
   const writer = new BinaryWriter();
   writer.writeString("test");
@@ -69,4 +102,15 @@ Deno.test("BinaryWriter grows automatically", () => {
     new Uint8Array([1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0]),
   );
   assertEquals(writer.capacity, 11);
+});
+
+Deno.test("BinaryWriter#seek", () => {
+  const writer = new BinaryWriter();
+  writer.writeUInt8(1);
+  writer.seek(8);
+  writer.writeUInt8(2);
+  assertEquals(
+    writer.toUint8Array(),
+    new Uint8Array([1, 0, 0, 0, 0, 0, 0, 0, 2]),
+  );
 });
