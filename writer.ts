@@ -1,5 +1,10 @@
 /**
  * Simple cursor-based binary writer.
+ * @module
+ */
+
+/**
+ * Simple cursor-based binary writer.
  *
  * On initialization, the writer creates a buffer with a default size of 256 bytes.
  * The buffer will grow automatically as needed, but you can use {@link ensureSize} to reduce the number of resizing.

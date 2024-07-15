@@ -1,5 +1,10 @@
 /**
  * Simple cursor-based binary reader.
+ * @module
+ */
+
+/**
+ * Simple cursor-based binary reader.
  */
 export class BinaryReader {
   #data: DataView;
